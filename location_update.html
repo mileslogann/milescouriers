@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Update</title>
-    <!-- Add these scripts to your HTML -->
+    <!-- Include Firebase Realtime Database SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
     <script>
@@ -79,18 +79,8 @@
             var statusLatitude = parseFloat(document.getElementById('statusLatitude').value);
             var statusLongitude = parseFloat(document.getElementById('statusLongitude').value);
 
-            // Get latitude and longitude values for the On Route status
-            var statusLatitude = parseFloat(document.getElementById('statusLatitude').value);
-            var statusLongitude = parseFloat(document.getElementById('statusLongitude').value);
-
             // Get the custom status message
             var statusMessage = document.getElementById('statusMessage').value;
-
-            // Debugging statements
-            console.log('Selected Locations:', selectedLocations);
-            console.log('Status Location:', statusLatitude, statusLongitude);
-            console.log('Status Message:', statusMessage);
-
 
             // Create an array to store the selected locations
             var selectedLocations = [];
@@ -106,13 +96,10 @@
                 selectedLocations.push(latitude3 + ',' + longitude3);
             }
 
-            // Store the selected locations, status location, and status message in local storage
-            localStorage.setItem('selectedLocations', JSON.stringify(selectedLocations));
-            localStorage.setItem('statusLocation', statusLatitude + ',' + statusLongitude);
-            localStorage.setItem('statusMessage', statusMessage);
-
-            // Optionally, you can redirect back to main.html or perform other actions
-            // window.location.href = 'main.html';
+            // Store the selected locations, status location, and status message in Firebase Realtime Database
+            database.ref('locations').set(selectedLocations);
+            database.ref('statusLocation').set(statusLatitude + ',' + statusLongitude);
+            database.ref('statusMessage').set(statusMessage);
         });
     </script>
 </body>
