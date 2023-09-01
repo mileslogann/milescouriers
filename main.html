@@ -1,6 +1,7 @@
 <!-- main.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,8 +12,24 @@
     <!-- Add these scripts to your HTML -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    <script>
+        // Initialize Firebase in main.html
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
+
 
 </head>
+
 <body>
     <div id="map" style="height: 600px;"></div>
 
@@ -38,7 +55,7 @@
 
         // Add markers and polyline for each selected location
         for (var i = 0; i < selectedLocations.length; i++) {
-            var coords = selectedLocations[i].split(',').map(function(coord) {
+            var coords = selectedLocations[i].split(',').map(function (coord) {
                 return parseFloat(coord.trim());
             });
 
@@ -53,7 +70,7 @@
         // Retrieve the On Route status location from local storage
         var statusLocation = localStorage.getItem('statusLocation');
         if (statusLocation) {
-            var statusCoords = statusLocation.split(',').map(function(coord) {
+            var statusCoords = statusLocation.split(',').map(function (coord) {
                 return parseFloat(coord.trim());
             });
 
@@ -63,4 +80,5 @@
         }
     </script>
 </body>
+
 </html>
