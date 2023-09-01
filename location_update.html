@@ -1,0 +1,89 @@
+<!-- update_location.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Update</title>
+</head>
+<body>
+    <!-- Your location selection form here -->
+    <form id="location-form">
+        <!-- Input fields for latitude and longitude for Point 1 -->
+        <label for="latitude1">Latitude for Point 1:</label>
+        <input type="number" id="latitude1" name="latitude1" step="any" required><br>
+
+        <label for="longitude1">Longitude for Point 1:</label>
+        <input type="number" id="longitude1" name="longitude1" step="any" required><br>
+
+        <!-- Input fields for latitude and longitude for Point 2 -->
+        <label for="latitude2">Latitude for Point 2:</label>
+        <input type="number" id="latitude2" name="latitude2" step="any"><br>
+
+        <label for="longitude2">Longitude for Point 2:</label>
+        <input type="number" id="longitude2" name="longitude2" step="any"><br>
+
+        <!-- Input fields for latitude and longitude for Point 3 -->
+        <label for="latitude3">Latitude for Point 3:</label>
+        <input type="number" id="latitude3" name="latitude3" step="any"><br>
+
+        <label for="longitude3">Longitude for Point 3:</label>
+        <input type="number" id="longitude3" name="longitude3" step="any"><br>
+
+        <!-- Input fields for On Route status -->
+        <label for="statusLatitude">Latitude for On Route Status:</label>
+        <input type="number" id="statusLatitude" name="statusLatitude" step="any" required><br>
+
+        <label for="statusLongitude">Longitude for On Route Status:</label>
+        <input type="number" id="statusLongitude" name="statusLongitude" step="any" required><br>
+
+        <label for="statusMessage">Status Message:</label>
+        <input type="text" id="statusMessage" name="statusMessage" required><br>
+
+        <button type="submit">Update Location</button>
+    </form>
+
+    <script>
+        document.getElementById('location-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get latitude and longitude values for up to three points
+            var latitude1 = parseFloat(document.getElementById('latitude1').value);
+            var longitude1 = parseFloat(document.getElementById('longitude1').value);
+            var latitude2 = parseFloat(document.getElementById('latitude2').value);
+            var longitude2 = parseFloat(document.getElementById('longitude2').value);
+            var latitude3 = parseFloat(document.getElementById('latitude3').value);
+            var longitude3 = parseFloat(document.getElementById('longitude3').value);
+
+            // Get latitude and longitude values for the On Route status
+            var statusLatitude = parseFloat(document.getElementById('statusLatitude').value);
+            var statusLongitude = parseFloat(document.getElementById('statusLongitude').value);
+
+            // Get the custom status message
+            var statusMessage = document.getElementById('statusMessage').value;
+
+            // Create an array to store the selected locations
+            var selectedLocations = [];
+
+            // Add selected locations to the array
+            if (!isNaN(latitude1) && !isNaN(longitude1)) {
+                selectedLocations.push(latitude1 + ',' + longitude1);
+            }
+            if (!isNaN(latitude2) && !isNaN(longitude2)) {
+                selectedLocations.push(latitude2 + ',' + longitude2);
+            }
+            if (!isNaN(latitude3) && !isNaN(longitude3)) {
+                selectedLocations.push(latitude3 + ',' + longitude3);
+            }
+
+            // Store the selected locations, status location, and status message in local storage
+            localStorage.setItem('selectedLocations', JSON.stringify(selectedLocations));
+            localStorage.setItem('statusLocation', statusLatitude + ',' + statusLongitude);
+            localStorage.setItem('statusMessage', statusMessage);
+
+            // Optionally, you can redirect back to main.html or perform other actions
+            // window.location.href = 'main.html';
+        });
+    </script>
+</body>
+</html>

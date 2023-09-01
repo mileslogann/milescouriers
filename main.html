@@ -1,0 +1,62 @@
+<!-- main.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page</title>
+    <!-- Include Leaflet library -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script>
+        var map = L.map('map').setView([45, -100], 4);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Retrieve the last selected locations from local storage
+        var locationsJSON = localStorage.getItem('selectedLocations');
+        var selectedLocations = locationsJSON ? JSON.parse(locationsJSON) : [];
+
+        // Create an array to hold the markers
+        var markers = [];
+
+        // Create a polyline for the red line
+        var redPolyline = L.polyline([], {
+            color: 'red',
+            weight: 3
+        }).addTo(map);
+
+        // Add markers and polyline for each selected location
+        for (var i = 0; i < selectedLocations.length; i++) {
+            var coords = selectedLocations[i].split(',').map(function(coord) {
+                return parseFloat(coord.trim());
+            });
+
+            // Create a marker for each location
+            var marker = L.marker(coords).addTo(map);
+            markers.push(marker);
+
+            // Add coordinates to the red line
+            redPolyline.addLatLng(coords);
+        }
+
+        // Retrieve the On Route status location from local storage
+        var statusLocation = localStorage.getItem('statusLocation');
+        if (statusLocation) {
+            var statusCoords = statusLocation.split(',').map(function(coord) {
+                return parseFloat(coord.trim());
+            });
+
+            // Create a marker for the On Route status
+            var statusMarker = L.marker(statusCoords).addTo(map);
+            statusMarker.bindPopup('<b>On Route Status</b><br>' + localStorage.getItem('statusMessage')).openPopup();
+        }
+    </script>
+</body>
+</html>
