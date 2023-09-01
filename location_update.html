@@ -10,7 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
     <script>
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAD3fc9vlLyOIpW9rS3kktkxwWB1htn4vE",
             authDomain: "trck-15337.firebaseapp.com",
@@ -21,8 +21,10 @@
         };
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        firebase.initializeApp(firebaseConfig);
+
+        // Reference to your Firebase Realtime Database
+        const database = firebase.database();
     </script>
 </head>
 
