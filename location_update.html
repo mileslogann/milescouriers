@@ -1,11 +1,13 @@
 <!-- update_location.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Update</title>
 </head>
+
 <body>
     <!-- Your location selection form here -->
     <form id="location-form">
@@ -44,7 +46,7 @@
     </form>
 
     <script>
-        document.getElementById('location-form').addEventListener('submit', function(event) {
+        document.getElementById('location-form').addEventListener('submit', function (event) {
             event.preventDefault();
 
             // Get latitude and longitude values for up to three points
@@ -59,8 +61,18 @@
             var statusLatitude = parseFloat(document.getElementById('statusLatitude').value);
             var statusLongitude = parseFloat(document.getElementById('statusLongitude').value);
 
+            // Get latitude and longitude values for the On Route status
+            var statusLatitude = parseFloat(document.getElementById('statusLatitude').value);
+            var statusLongitude = parseFloat(document.getElementById('statusLongitude').value);
+
             // Get the custom status message
             var statusMessage = document.getElementById('statusMessage').value;
+
+            // Debugging statements
+            console.log('Selected Locations:', selectedLocations);
+            console.log('Status Location:', statusLatitude, statusLongitude);
+            console.log('Status Message:', statusMessage);
+
 
             // Create an array to store the selected locations
             var selectedLocations = [];
@@ -86,4 +98,5 @@
         });
     </script>
 </body>
+
 </html>
