@@ -29,29 +29,24 @@
             weight: 3
         }).addTo(map);
 
-        var startMarker = L.marker(routeCoordinates[0]).addTo(map);
-        var midMarker = L.marker(routeCoordinates[1]).addTo(map);
-        var endMarker = L.marker(routeCoordinates[2]).addTo(map);
+        var redIcon = L.divIcon({ // Custom red marker icon
+            className: 'custom-marker',
+            html: '<div style="background-color: red; color: yellow; padding: 5px;">Pending for Inspections and Scanning</div>'
+        });
 
-        startMarker.bindPopup('<b>Location1: Syria</b>');
-        midMarker.bindPopup('<b>Location2: Delhi International Airport</b>');
-        endMarker.bindPopup('<b>Location3: United States</b>');
+        var startMarker = L.marker(routeCoordinates[0], { icon: redIcon }).addTo(map);
+        var midMarker = L.marker(routeCoordinates[1], { icon: redIcon }).addTo(map);
+        var endMarker = L.marker(routeCoordinates[2], { icon: redIcon }).addTo(map);
+
+        // Change the status specifically for Location2 (Delhi International Airport)
+        midMarker.setIcon(L.divIcon({
+            className: 'custom-marker',
+            html: '<div style="background-color: red; color: yellow; padding: 5px;">Status: Delhi - Pending for Inspections and Scanning</div>'
+        }));
 
         // Fit the map to all markers
         var bounds = L.latLngBounds(routeCoordinates);
         map.fitBounds(bounds);
-
-        // Add a custom control to show the status
-        var statusControl = L.control({ position: 'topright' });
-        statusControl.onAdd = function (map) {
-            var div = L.DomUtil.create('div', 'info legend');
-            div.innerHTML += '<b>Status:</b><br>';
-            div.innerHTML += 'Syria - No update<br>';
-            div.innerHTML += 'Delhi International Airport - Pending for Inspections and Scanning<br>';
-            div.innerHTML += 'United States - No update<br>';
-            return div;
-        };
-        statusControl.addTo(map);
     </script>
 </body>
 </html>
