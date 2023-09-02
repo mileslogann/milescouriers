@@ -12,13 +12,14 @@
     <div id="map" style="height: 600px;"></div>
 
     <script>
-        var map = L.map('map').setView([28.5562, 77.1000], 4); // Start at Location2: Delhi International Airport
+        var map = L.map('map'); // Create the map without specifying a view initially
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
         var routeCoordinates = [
+            [35.3115, 38.9580],    // Location1: Syria
             [28.5562, 77.1000],    // Location2: Delhi International Airport
             [37.7749, -122.4194]   // Location3: United States
         ];
@@ -28,32 +29,29 @@
             weight: 3
         }).addTo(map);
 
-        var itemOnRoute = L.marker(routeCoordinates[0]).addTo(map); // Start at Location2
-        itemOnRoute.bindPopup('<b>Item on Route</b><br>Status: <span style="color: orange;">Pending for Inspections and Scanning</span>').openPopup();
+        var startMarker = L.marker(routeCoordinates[0]).addTo(map);
+        var midMarker = L.marker(routeCoordinates[1]).addTo(map);
+        var endMarker = L.marker(routeCoordinates[2]).addTo(map);
 
-        var positionIndex = 1; // Move to Location3
+        startMarker.bindPopup('<b>Location1: Syria</b>');
+        midMarker.bindPopup('<b>Location2: Delhi International Airport</b>');
+        endMarker.bindPopup('<b>Location3: United States</b>');
 
-        function updatePosition() {
-            itemOnRoute.setLatLng(routeCoordinates[positionIndex]);
+        // Fit the map to all markers
+        var bounds = L.latLngBounds(routeCoordinates);
+        map.fitBounds(bounds);
 
-            var locationName = "";
-            var status = "Pending for Inspections and Scanning";
-
-            if (positionIndex === 0) {
-                locationName = "Location2: Delhi International Airport";
-            } else if (positionIndex === 1) {
-                locationName = "Location3: United States";
-            }
-
-            itemOnRoute.bindPopup('<b>' + locationName + '</b><br>Status: <span style="color: orange;">' + status + '</span>').openPopup();
-
-            positionIndex = (positionIndex + 1) % routeCoordinates.length;
-
-            setTimeout(updatePosition, 48 * 60 * 60 * 1000); // Update every 48 hours
-        }
-
-        // Start the position update loop
-        updatePosition();
+        // Add a custom control to show the status
+        var statusControl = L.control({ position: 'topright' });
+        statusControl.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'info legend');
+            div.innerHTML += '<b>Status:</b><br>';
+            div.innerHTML += 'Location1: Syria - No update<br>';
+            div.innerHTML += 'Location2: Delhi International Airport - Pending for Inspections and Scanning<br>';
+            div.innerHTML += 'Location3: United States - No update<br>';
+            return div;
+        };
+        statusControl.addTo(map);
     </script>
 </body>
 </html>
