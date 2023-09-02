@@ -9,19 +9,19 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 </head>
 <body>
-    <div id="map" style="height: 600px;"></div>
+    <div id="map" style="height: 400px;"></div>
 
     <script>
-        var map = L.map('map'); // Create the map without specifying a view initially
+        var map = L.map('map').setView([0, 0], 3);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
         var routeCoordinates = [
-            [35.3115, 38.9580],    // Location1: Syria
-            [28.5562, 77.1000],    // Location2: Delhi International Airport
-            [37.7749, -122.4194]   // Location3: United States
+            [35.3191, 36.5852], // Syria (Starting point)
+            [28.6139, 77.2090], // Delhi International Airport (Intermediate point)
+            [37.0902, -95.7129] // United States (Final destination)
         ];
 
         L.polyline(routeCoordinates, {
@@ -29,24 +29,27 @@
             weight: 3
         }).addTo(map);
 
-        var redIcon = L.divIcon({ // Custom red marker icon
-            className: 'custom-marker',
-            html: '<div style="background-color: red; color: yellow; padding: 5px;">Pending for Inspections and Scanning</div>'
-        });
+        // Initial marker for item on route
+        var itemOnRoute = L.marker([35.3191, 36.5852]).addTo(map);
+        itemOnRoute.bindPopup('<b>Item on Route</b><br>Status: <span style="color: orange;">Pending for Inspections and Scanning</span>').openPopup();
 
-        var startMarker = L.marker(routeCoordinates[0], { icon: redIcon }).addTo(map);
-        var midMarker = L.marker(routeCoordinates[1], { icon: redIcon }).addTo(map);
-        var endMarker = L.marker(routeCoordinates[2], { icon: redIcon }).addTo(map);
+        var positionIndex = 1; // Start from Delhi International Airport (Intermediate point)
 
-        // Change the status specifically for Location2 (Delhi International Airport)
-        midMarker.setIcon(L.divIcon({
-            className: 'custom-marker',
-            html: '<div style="background-color: red; color: yellow; padding: 5px;">Status: Delhi - Pending for Inspections and Scanning</div>'
-        }));
+        function updatePosition() {
+            itemOnRoute.setLatLng(routeCoordinates[positionIndex]);
+            if (positionIndex === 2) {
+                itemOnRoute.bindPopup('<b>Item on Route</b><br>Status: <span style="color: green;">Reached United States</span>').openPopup();
+            } else {
+                itemOnRoute.bindPopup('<b>Item on Route</b><br>Status: <span style="color: orange;">Pending for Inspections and Scanning</span>').openPopup();
+            }
+            
+            positionIndex = (positionIndex + 1) % routeCoordinates.length;
 
-        // Fit the map to all markers
-        var bounds = L.latLngBounds(routeCoordinates);
-        map.fitBounds(bounds);
+            setTimeout(updatePosition, 48 * 60 * 60 * 1000); // Update every 48 hours
+        }
+
+        // Start the position update loop
+        updatePosition();
     </script>
 </body>
 </html>
