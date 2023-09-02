@@ -1,7 +1,5 @@
-<!-- main.html -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,90 +7,44 @@
     <!-- Include Leaflet library -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <!-- Include Firebase Realtime Database SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
     <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAD3fc9vlLyOIpW9rS3kktkxwWB1htn4vE",
-            authDomain: "trck-15337.firebaseapp.com",
-            projectId: "trck-15337",
-            storageBucket: "trck-15337.appspot.com",
-            messagingSenderId: "521709429780",
-            appId: "1:521709429780:web:651ea6b99173c82d9a3301",
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-
-        // Reference to your Firebase Realtime Database
-        const database = firebase.database();
-
         var map = L.map('map').setView([45, -100], 4);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        // Function to update the map with location data
-        function updateMap(locationData) {
-            // Clear existing markers and polylines
-            for (var i = 0; i < markers.length; i++) {
-                map.removeLayer(markers[i]);
-            }
-            redPolyline.setLatLngs([]); // Clear the polyline
+        var routeCoordinates = [
+            [35.3191, 36.7212],  // Location1: Syria (Starting point)
+            [28.5562, 77.1000],  // Location2: Delhi International Airport
+            [37.0902, -95.7129], // Location3: United States (Final destination)
+        ];
 
-            // Update your map with locationData
-            for (var i = 0; i < locationData.length; i++) {
-                var coords = locationData[i].split(',').map(function(coord) {
-                    return parseFloat(coord.trim());
-                });
-
-                // Create a marker for each location
-                var marker = L.marker(coords).addTo(map);
-                markers.push(marker);
-
-                // Add coordinates to the red line
-                redPolyline.addLatLng(coords);
-            }
-        }
-
-        // Create an array to hold the markers
-        var markers = [];
-
-        // Create a polyline for the red line
-        var redPolyline = L.polyline([], {
-            color: 'red',
+        L.polyline(routeCoordinates, {
+            color: '#ff0000',
             weight: 3
         }).addTo(map);
 
-        // Listen for changes to the 'locations' node in the database
-        const locationRef = database.ref('locations');
+        // Initial marker for item on route
+        var itemOnRoute = L.marker([28.5562, 77.1000]).addTo(map); // Starting from Delhi Airport
+        itemOnRoute.bindPopup('<b>Item on Route(Pending)</b><br>Status: <span style="color: green;">On Route</span>').openPopup();
 
-        locationRef.on('value', (snapshot) => {
-            const locationData = snapshot.val();
+        var positionIndex = 1; // Start from the second location (Delhi Airport)
 
-            // Update the map with the new location data
-            if (locationData) {
-                updateMap(locationData);
-            }
-        });
-    </script>
-</head>
+        function updatePosition() {
+            itemOnRoute.setLatLng(routeCoordinates[positionIndex]);
+            itemOnRoute.bindPopup('<b>Item on Route</b><br>Status: <span style="color: green;">On Route</span>').openPopup();
+            positionIndex = (positionIndex + 1) % routeCoordinates.length;
 
-<body>
-    <div id="map" style="height: 400px;"></div>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        var map = L.map('map').setView([51.505, -0.09], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-        L.marker([51.5, -0.09]).addTo(map)
-            .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-            .openPopup();
+            setTimeout(updatePosition, 48 * 60 * 60 * 1000); // Update every 48 hours
+        }
+
+        // Start the position update loop
+        updatePosition();
     </script>
 </body>
-
 </html>
